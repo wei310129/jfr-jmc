@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  自定義 JFR 設定檔
+  使用方式：
+    -XX:StartFlightRecording=settings=src/main/resources/jfr/custom-profile.jfc,filename=output.jfr
+-->
+<configuration version="2.0"
+               label="Custom JFR Profile"
+               description="JFR/JMC 學習用設定檔，啟用自定義事件與關鍵 JVM 事件">
+
+    <!-- ── 自定義業務事件 ── -->
+    <event name="tw.com.aidenmade.HttpRequest">
+        <setting name="enabled">true</setting>
+        <setting name="stackTrace">false</setting>
+    </event>
+
+    <event name="tw.com.aidenmade.ServiceOperation">
+        <setting name="enabled">true</setting>
+        <setting name="stackTrace">true</setting>
+    </event>
+
+    <!-- ── GC 事件 ── -->
+    <event name="jdk.GarbageCollection">
+        <setting name="enabled">true</setting>
+        <setting name="threshold">0 ms</setting>
+    </event>
+    <event name="jdk.GCHeapSummary">
+        <setting name="enabled">true</setting>
+    </event>
+    <event name="jdk.ObjectAllocationInNewTLAB">
+        <setting name="enabled">true</setting>
+        <setting name="stackTrace">true</setting>
+    </event>
+
+    <!-- ── CPU 事件 ── -->
+    <event name="jdk.CPULoad">
+        <setting name="enabled">true</setting>
+        <setting name="period">1000 ms</setting>
+    </event>
+    <event name="jdk.ExecutionSample">
+        <setting name="enabled">true</setting>
+        <setting name="period">20 ms</setting>
+    </event>
+
+    <!-- ── Thread / Lock 事件 ── -->
+    <event name="jdk.JavaMonitorEnter">
+        <setting name="enabled">true</setting>
+        <setting name="stackTrace">true</setting>
+        <setting name="threshold">10 ms</setting>
+    </event>
+    <event name="jdk.JavaMonitorWait">
+        <setting name="enabled">true</setting>
+        <setting name="stackTrace">true</setting>
+        <setting name="threshold">10 ms</setting>
+    </event>
+    <event name="jdk.ThreadSleep">
+        <setting name="enabled">true</setting>
+        <setting name="stackTrace">true</setting>
+        <setting name="threshold">10 ms</setting>
+    </event>
+    <event name="jdk.JavaThreadStatistics">
+        <setting name="enabled">true</setting>
+        <setting name="period">1000 ms</setting>
+    </event>
+
+    <!-- ── 記憶體 / Heap ── -->
+    <event name="jdk.HeapSummary">
+        <setting name="enabled">true</setting>
+        <setting name="period">1000 ms</setting>
+    </event>
+    <event name="jdk.PhysicalMemory">
+        <setting name="enabled">true</setting>
+        <setting name="period">5000 ms</setting>
+    </event>
+
+    <!-- ── 類別載入 ── -->
+    <event name="jdk.ClassLoad">
+        <setting name="enabled">true</setting>
+        <setting name="threshold">10 ms</setting>
+    </event>
+
+</configuration>
