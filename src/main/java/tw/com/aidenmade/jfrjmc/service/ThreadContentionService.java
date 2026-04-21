@@ -13,6 +13,7 @@ public class ThreadContentionService {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     public int simulateContention(int threadCount, int iterationsPerThread) throws InterruptedException {
+        // 自定義事件提供業務語意（這次 contention 任務），JDK 事件提供底層鎖等待細節。
         var event = new ServiceOperationJfrEvent();
         event.operationName = "simulateContention";
         event.inputSize = (long) threadCount * iterationsPerThread;
@@ -25,6 +26,7 @@ public class ThreadContentionService {
             for (int t = 0; t < threadCount; t++) {
                 executor.submit(() -> {
                     for (int i = 0; i < iterationsPerThread; i++) {
+                        // 多執行緒競爭同一把鎖，會在 JFR 內建事件中反映為 Monitor Enter 等待。
                         synchronized (sharedLock) {
                             counter.incrementAndGet();
                         }
@@ -47,6 +49,7 @@ public class ThreadContentionService {
 
     public CompletableFuture<String> simulateSlowOperation(long delayMs) {
         return CompletableFuture.supplyAsync(() -> {
+            // 這個自定義事件可把業務操作名稱與 jdk.ThreadSleep 事件時間對齊分析。
             var event = new ServiceOperationJfrEvent();
             event.operationName = "slowOperation";
             event.inputSize = delayMs;
