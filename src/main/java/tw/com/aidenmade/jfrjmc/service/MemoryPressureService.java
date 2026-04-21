@@ -18,7 +18,7 @@ public class MemoryPressureService {
         try {
             List<String> items = IntStream.range(0, itemCount)
                 .mapToObj(i -> "item-" + i + "-" + "x".repeat(100))
-                .collect(Collectors.toList());
+                .toList();
 
             int total = items.stream().mapToInt(String::length).sum();
             event.result = "totalChars=" + total;
