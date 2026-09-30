@@ -2,6 +2,17 @@
 
 以 Spring Boot 提供 CPU、記憶體配置、執行緒鎖爭用與慢速操作的負載入口，練習使用 **Java Flight Recorder (JFR)** 錄製事件，再用 **Java Mission Control (JMC)** 分析 JVM 行為。Service 自訂事件將操作名稱、輸入規模與結果連結到 profiling 資料，方便對照應用程式與 JVM 層的觀察。
 
+## 工程重點與驗證入口
+
+| 想回答的問題 | 實作與觀察方式 |
+| --- | --- |
+| 延遲來自 CPU、配置、鎖還是等待？ | 以不同負載 API 控制觸發條件，再對照 CPU sample、GC／Heap、Monitor 與 Thread Sleep；不能只從單一事件推論根因 |
+| 如何把 JVM 行為連回業務操作？ | ServiceOperation 自訂事件帶入操作名稱、輸入規模、結果及 duration，搭配 Service 測試讀取錄製結果 |
+| 如何取得適合問題的錄製資料？ | 自訂 profile、保留最近 5 分鐘、60 秒定時與 JMX 手動錄製三種模式，再以 JMC Event Browser 核對 |
+| 哪些驗證已自動化？ | 自訂事件錄製／讀取與 Service 整合測試；JMC 圖形介面操作及 HTTP 請求事件自動產生未包含在內 |
+
+使用流程：選一種負載 → 選錄製模式 → 觸發 API → 核對操作事件與 JVM 事件 → 記錄觀察與下一個假設。Repository 未附效能改善幅度或示例 .jfr，不將可觸發負載直接當成調校成果。
+
 ## 專案範圍
 
 - 透過 HTTP API 觸發不同負載，觀察 CPU 取樣、物件配置、GC、鎖爭用與 Thread Sleep。
@@ -150,3 +161,4 @@ src/test/java/tw/com/aidenmade/jfrjmc/     # 事件與 Service 測試
 scripts/run-with-jfr.bat                  # Windows 啟動腳本
 scripts/run-with-jfr.sh                   # Linux / macOS 啟動腳本
 ```
+
